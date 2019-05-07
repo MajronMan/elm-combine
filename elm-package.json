@@ -1,7 +1,7 @@
 {
     "version": "3.1.1",
     "summary": "A parser combinator library",
-    "repository": "https://github.com/Bogdanp/elm-combine.git",
+    "repository": "https://github.com/MajronMan/elm-combine.git",
     "license": "BSD3",
     "source-directories": [
         "examples",
