@@ -467,27 +467,32 @@ withColumn f =
 currentLocation : InputStream -> ParseLocation
 currentLocation stream =
     let
-        find position currentLine lines =
-            case lines of
+        lines =
+            String.split "\n" stream.data
+
+        find position lineNo linesLeft visited =
+            let
+                column =
+                    position - visited
+            in
+            case linesLeft of
                 [] ->
-                    ParseLocation "" currentLine position
+                    Debug.crash "impossible"
+
+                [ line ] ->
+                    ParseLocation line lineNo column
 
                 line :: rest ->
                     let
                         length =
                             String.length line
-
-                        lengthPlusNL =
-                            length + 1
                     in
-                        if position == length then
-                            ParseLocation line currentLine position
-                        else if position > length then
-                            find (position - lengthPlusNL) (currentLine + 1) rest
-                        else
-                            ParseLocation line currentLine position
+                    if column > length then
+                        find position (lineNo + 1) rest (visited + length + 1)
+                    else
+                        ParseLocation line lineNo column
     in
-        find stream.position 0 (String.split "\n" stream.data)
+    find stream.position 0 lines 0
 
 
 {-| Get the current source line in the input stream.
